@@ -16,8 +16,9 @@ class FormSixLetterWordsTest {
     void test() throws IOException {
         File file = copyFileUsingStream(new File("test.txt"), new File(UUID.randomUUID().toString()));
         FormSixLetterWords formSixLetterWords = new FormSixLetterWords(new File(file.getName()));
-        Set<String> expected = new HashSet<>(Arrays.asList("tomtom", "balbal", "bibibi", "bikast", "kastbi"));
-        assertEquals(expected, formSixLetterWords.getSixLetterWords());
+        Set<String> expected = new HashSet<>(Arrays.asList("to + mtom = tomtom"));
+        Set<String> advanced = new HashSet<>(Arrays.asList("to + mtom = tomtom","to + mt + om = tomtom")); // NOT tomt + om
+        assertEquals(expected, formSixLetterWords.getCombinations());
     }
 
     private static File copyFileUsingStream(File original, File copy) throws IOException {

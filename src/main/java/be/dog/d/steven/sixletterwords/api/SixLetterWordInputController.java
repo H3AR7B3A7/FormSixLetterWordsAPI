@@ -30,7 +30,7 @@ public class SixLetterWordInputController {
         fileOutputStream.write(file.getBytes());
         fileOutputStream.close();
         FormSixLetterWords formSixLetterWords = new FormSixLetterWords(newFile);
-        Set<String> response = formSixLetterWords.getSixLetterWords();
+        Set<String> response = formSixLetterWords.getCombinations();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

@@ -2,45 +2,54 @@ package be.dog.d.steven.sixletterwords.logic;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class FormSixLetterWords {
 
     private static final int WORD_LENGTH = 6;
     private final File file;
-    private final Set<String> sixLetterWords = new HashSet<>();
+    private final Set<String> combinations = new HashSet<>();
 
     public FormSixLetterWords(File file){
         this.file = file;
     }
 
-    public Set<String> getSixLetterWords() throws IOException {
-        List<String> firstParts = getLines();
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file, true), 100000);
+    public Set<String> getCombinations() {
+        List<String> parts = getLines();
 
-        assert firstParts != null;
-        List<String> nextParts = new ArrayList<>(firstParts);
+        if (parts == null){
+            return null;
+        }
+
+        List<String> fullWords = extractFullWords(parts);
+        List<String> nextParts = new ArrayList<>(parts);
+
+        for (int i = 0; i < parts.size(); i++) {
+            for (int j = 0; j < nextParts.size(); j++) {
+                if(nextParts.get(j).length() == WORD_LENGTH - parts.get(i).length()){
+                    if (fullWords.contains(parts.get(i) + nextParts.get(j))) {
+                        combinations.add(parts.get(i) + " + " + nextParts.get(j) + " = " + parts.get(i) + nextParts.get(j));
+                    }
+                }
+//                else if (parts.get(i).length() + nextParts.get(j).length() < WORD_LENGTH){
+//                    parts.add(parts.get(i) + nextParts.get(j));
+//                }
+            }
+        }
+
+        System.out.println(combinations.size());
+        return combinations;
+    }
+
+    private List<String> extractFullWords(List<String> firstParts) {
+        List<String> fullWords = new ArrayList<>();
 
         for (int i = 0; i < firstParts.size(); i++) {
             if (firstParts.get(i).length() == WORD_LENGTH) {
-                sixLetterWords.add(firstParts.get(i));
-            }
-            if (firstParts.get(i).length() < WORD_LENGTH) {
-                for (String nextPart : nextParts) {
-                    if (nextPart.length() == WORD_LENGTH - firstParts.get(i).length()) {
-                        sixLetterWords.add(firstParts.get(i) + nextPart);
-                        writer.newLine();
-                        writer.write(firstParts.get(i) + nextPart);
-                    }
-                    else if (firstParts.get(i).length() + nextPart.length() < WORD_LENGTH) {
-                        firstParts.add(firstParts.get(i) + nextPart);  // OutOfMemoryError on larger files
-                    }
-                }
+                fullWords.add(firstParts.get(i));
+                firstParts.remove(i--);
             }
         }
-        writer.close();
-        System.out.println(sixLetterWords.size());
-        return sixLetterWords;
+        return fullWords;
     }
 
     private List<String> getLines() {
