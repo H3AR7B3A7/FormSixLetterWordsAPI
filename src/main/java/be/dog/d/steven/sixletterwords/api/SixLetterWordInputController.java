@@ -25,7 +25,7 @@ public class SixLetterWordInputController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        File newFile = new File("C:\\Users\\Admin\\IdeaProjects\\six-letter-words", String.valueOf(UUID.randomUUID()));
+        File newFile = new File(String.valueOf(UUID.randomUUID()));
         FileOutputStream fileOutputStream = new FileOutputStream(newFile);
         fileOutputStream.write(file.getBytes());
         fileOutputStream.close();
