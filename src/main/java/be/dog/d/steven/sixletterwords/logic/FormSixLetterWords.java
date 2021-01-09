@@ -16,18 +16,26 @@ public class FormSixLetterWords {
     public Set<String> getCombinations() {
         List<String> parts = getLines();
         List<String> fullWords = extractFullWords(parts); // Files are checked by API
-        List<String> nextParts = new ArrayList<>(parts); // Only needed for part that is commented out
 
-        for (int i = 0; i < parts.size(); i++) {
-            for (String nextPart : nextParts) {
-                if (nextPart.length() == WORD_LENGTH - parts.get(i).length()) {
-                    if (fullWords.contains(parts.get(i) + nextPart)) {
-                        combinations.add(parts.get(i) + " + " + nextPart + " = " + parts.get(i) + nextPart);
+        String current = "";
+
+        for (String word : fullWords) {
+            List<List<String>> result = findAllSubstrings(word);
+            for (List<String> list : result) {
+                for (String part : list) {
+                    if (!parts.contains(part)) {
+                        current = "";
+                        break;
+                    } else if (current.length() > 0) {
+                        current += " + " + part;
+                    } else {
+                        current += part;
                     }
                 }
-//                else if (parts.get(i).length() + nextPart.length() < WORD_LENGTH) {
-//                    parts.add(parts.get(i) + nextPart);
-//                }
+                if (current.length() > 0) {
+                    combinations.add(current + " = " + word);
+                    current = "";
+                }
             }
         }
         return combinations;
@@ -56,5 +64,29 @@ public class FormSixLetterWords {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private List<List<String>> findAllSubstrings(String input) {
+
+        if (input.length() == 1) {
+            return Collections.singletonList(Collections.singletonList(input));
+        }
+
+        List<List<String>> result = new ArrayList<>();
+
+        // Recurse
+        for (List<String> subResult : findAllSubstrings(input.substring(1))) {
+
+            // Don't split
+            List<String> l2 = new ArrayList<>(subResult);
+            l2.set(0, input.charAt(0) + l2.get(0));
+            result.add(l2);
+
+            // Split
+            List<String> l = new ArrayList<>(subResult);
+            l.add(0, input.substring(0, 1));
+            result.add(l);
+        }
+        return result;
     }
 }
