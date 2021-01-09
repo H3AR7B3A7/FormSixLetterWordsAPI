@@ -14,22 +14,22 @@ public class FormSixLetterWords {
     }
 
     public Set<String> getCombinations() {
-        List<String> parts = getLines();
+        List<String> parts = getLinesFromFile();
         List<String> fullWords = extractFullWords(parts); // Files are checked by API
 
         String current = "";
 
         for (String word : fullWords) {
-            List<List<String>> result = findAllSubstrings(word);
-            for (List<String> list : result) {
-                for (String part : list) {
-                    if (!parts.contains(part)) {
+            List<List<String>> listOfSubStrings = findAllSubstrings(word);
+            for (List<String> subStrings : listOfSubStrings) {
+                for (String string : subStrings) {
+                    if (!parts.contains(string)) {
                         current = "";
                         break;
                     } else if (current.length() > 0) {
-                        current += " + " + part;
+                        current += " + " + string;
                     } else {
-                        current += part;
+                        current += string;
                     }
                 }
                 if (current.length() > 0) {
@@ -53,7 +53,7 @@ public class FormSixLetterWords {
         return fullWords;
     }
 
-    private List<String> getLines() {
+    private List<String> getLinesFromFile() {
         ArrayList<String> wordParts = new ArrayList<>();
         try (Scanner scanner = new Scanner(new FileReader(file.getName()))) {
             while (scanner.hasNext()) {
@@ -72,21 +72,18 @@ public class FormSixLetterWords {
             return Collections.singletonList(Collections.singletonList(input));
         }
 
-        List<List<String>> result = new ArrayList<>();
+        List<List<String>> listOfSubstrings = new ArrayList<>();
 
-        // Recurse
         for (List<String> subResult : findAllSubstrings(input.substring(1))) {
 
-            // Don't split
-            List<String> l2 = new ArrayList<>(subResult);
-            l2.set(0, input.charAt(0) + l2.get(0));
-            result.add(l2);
+            List<String> noSplits = new ArrayList<>(subResult);
+            noSplits.set(0, input.charAt(0) + noSplits.get(0));
+            listOfSubstrings.add(noSplits);
 
-            // Split
-            List<String> l = new ArrayList<>(subResult);
-            l.add(0, input.substring(0, 1));
-            result.add(l);
+            List<String> splits = new ArrayList<>(subResult);
+            splits.add(0, input.substring(0, 1));
+            listOfSubstrings.add(splits);
         }
-        return result;
+        return listOfSubstrings;
     }
 }
