@@ -30,8 +30,6 @@ public class FormSixLetterWords {
 //                }
             }
         }
-
-        System.out.println(combinations.size());
         return combinations;
     }
 
