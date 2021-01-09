@@ -9,33 +9,56 @@ public class FormSixLetterWords {
     private final File file;
     private final Set<String> combinations = new HashSet<>();
 
-    public FormSixLetterWords(File file){
+    public FormSixLetterWords(File file) {
         this.file = file;
     }
 
     public Set<String> getCombinations() {
         List<String> parts = getLines();
 
-        if (parts == null){
+        if (parts == null) {
             return null;
         }
 
         List<String> fullWords = extractFullWords(parts);
-        List<String> nextParts = new ArrayList<>(parts);
 
-        for (int i = 0; i < parts.size(); i++) {
-            for (int j = 0; j < nextParts.size(); j++) {
-                if(nextParts.get(j).length() == WORD_LENGTH - parts.get(i).length()){
-                    if (fullWords.contains(parts.get(i) + nextParts.get(j))) {
-                        combinations.add(parts.get(i) + " + " + nextParts.get(j) + " = " + parts.get(i) + nextParts.get(j));
-                    }
+        int n = parts.size();
+        String current = "";
+        String sum = "";
+
+        for (int i = WORD_LENGTH-1; i > 1; i--) {
+            String[] permutation = new String[i];
+            int[] idx = new int[i];
+            while (true) {
+
+                // Build
+                for (int j = 0; j < i; j++) {
+                    permutation[j] = parts.get(idx[j]);
                 }
-//                else if (parts.get(i).length() + nextParts.get(j).length() < WORD_LENGTH){
-//                    parts.add(parts.get(i) + nextParts.get(j));
-//                }
+
+                // Stringify
+                current = String.join("", permutation);
+
+                // Check & add to combinations
+                if (current.length() == WORD_LENGTH && fullWords.contains(current)) {
+                    sum = String.join(" + ", permutation);
+                    combinations.add(sum + " = " + current);
+                }
+
+                // Generate next permutation
+                int j = idx.length - 1;
+                for (; j >= 0; j--) {
+                    idx[j]++;
+                    if (idx[j] < n){
+                        break;
+                    }
+                    idx[j] = 0;
+                }
+
+                // Done when first index wraps around
+                if (j < 0) break;
             }
         }
-
         System.out.println(combinations.size());
         return combinations;
     }
