@@ -9,29 +9,24 @@ public class FormSixLetterWords {
     private final File file;
     private final Set<String> combinations = new HashSet<>();
 
-    public FormSixLetterWords(File file){
+    public FormSixLetterWords(File file) {
         this.file = file;
     }
 
     public Set<String> getCombinations() {
         List<String> parts = getLines();
-
-        if (parts == null){
-            return null;
-        }
-
-        List<String> fullWords = extractFullWords(parts);
-        List<String> nextParts = new ArrayList<>(parts);
+        List<String> fullWords = extractFullWords(parts); // Files are checked by API
+        List<String> nextParts = new ArrayList<>(parts); // Only needed for part that is commented out
 
         for (int i = 0; i < parts.size(); i++) {
-            for (int j = 0; j < nextParts.size(); j++) {
-                if(nextParts.get(j).length() == WORD_LENGTH - parts.get(i).length()){
-                    if (fullWords.contains(parts.get(i) + nextParts.get(j))) {
-                        combinations.add(parts.get(i) + " + " + nextParts.get(j) + " = " + parts.get(i) + nextParts.get(j));
+            for (String nextPart : nextParts) {
+                if (nextPart.length() == WORD_LENGTH - parts.get(i).length()) {
+                    if (fullWords.contains(parts.get(i) + nextPart)) {
+                        combinations.add(parts.get(i) + " + " + nextPart + " = " + parts.get(i) + nextPart);
                     }
                 }
-//                else if (parts.get(i).length() + nextParts.get(j).length() < WORD_LENGTH){
-//                    parts.add(parts.get(i) + nextParts.get(j));
+//                else if (parts.get(i).length() + nextPart.length() < WORD_LENGTH) {
+//                    parts.add(parts.get(i) + nextPart);
 //                }
             }
         }
