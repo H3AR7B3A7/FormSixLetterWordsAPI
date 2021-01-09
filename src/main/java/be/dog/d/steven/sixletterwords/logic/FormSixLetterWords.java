@@ -23,8 +23,7 @@ public class FormSixLetterWords {
         List<String> fullWords = extractFullWords(parts);
 
         int n = parts.size();
-        String current = "";
-        String sum = "";
+        String current;
 
         for (int i = WORD_LENGTH-1; i > 1; i--) {
             String[] permutation = new String[i];
@@ -41,7 +40,7 @@ public class FormSixLetterWords {
 
                 // Check & add to combinations
                 if (current.length() == WORD_LENGTH && fullWords.contains(current)) {
-                    sum = String.join(" + ", permutation);
+                    String sum = String.join(" + ", permutation);
                     combinations.add(sum + " = " + current);
                 }
 
@@ -59,7 +58,6 @@ public class FormSixLetterWords {
                 if (j < 0) break;
             }
         }
-        System.out.println(combinations.size());
         return combinations;
     }
 
